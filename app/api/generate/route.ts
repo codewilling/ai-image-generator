@@ -36,8 +36,7 @@ export async function POST(request: Request) {
   })
 
   if(error){
-    return NextResponse.json({error},{status: 500})
+    return NextResponse.json(error,{status: 500})
   }
-//   console.log("Prompt: ", prompt)
   return NextResponse.json({data}, {status: 200})
 }

@@ -1,14 +1,17 @@
 "use client";
 
-import { Suspense, useState } from "react";
+import { Suspense, useRef, useState } from "react";
 
 export default function Home() {
   const [generatedImage, setGeneratedImage] = useState<string>("");
   const [prompt, setPrompt] = useState<string>("");
+  const [submitted, setSubmitted] = useState(false);
 
   async function generateImage() {
     if (prompt.length === 0) return;
     //fetch with body set to prompt
+    setSubmitted(true);
+    setGeneratedImage("");
     const response = await fetch("/api/generate", {
       method: "POST",
       headers: {
@@ -40,8 +43,8 @@ export default function Home() {
           <div className="flex justify-center">
             <input
               type="text"
-              id="prompt"
-              name="prompt"
+              id="userPrompt"
+              name="userPrompt"
               className="rounded-l-lg py-3 px-4 text-slate-900 focus:outline-none"
               placeholder="Enter your prompt here"
               onChange={(e) => setPrompt(e.target.value)}
@@ -68,7 +71,19 @@ export default function Home() {
           <section className="mt-8 max-w-full">
             <div className="flex items-center justify-center border-2 border-dashed border-gray-500 rounded-md w-full p-10">
               <div className="text-md text-gray-600">
-                Image will be generated here!
+                {submitted ? (
+                  <>
+                    <div aria-busy="true" aria-describedby="progress-bar">
+                      Generating Image...
+                      <progress
+                        id="progress-bar"
+                        aria-label="Content loading…"
+                      ></progress>
+                    </div>
+                  </>
+                ) : (
+                  <p>Your generated image will appear here</p>
+                )}
               </div>
             </div>
           </section>
